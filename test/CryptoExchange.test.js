@@ -13,7 +13,7 @@ let cryptoExchange;
 contract('CryptoExchange', (accounts) => {
   before(async () => {
     token = await Token.new();
-    cryptoExchange = await CryptoExchange.new();
+    cryptoExchange = await CryptoExchange.new(token.address);
     await token.transfer(cryptoExchange.address, getEthers(1000000)); // 1 million
   });
 

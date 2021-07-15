@@ -5,7 +5,7 @@ module.exports = async function (deployer) {
   await deployer.deploy(Token);
   const token = await Token.deployed();
 
-  await deployer.deploy(CryptoExchange);
+  await deployer.deploy(CryptoExchange, token.address);
   const cryptoExchange = await CryptoExchange.deployed();
 
   // transfer all funds to cryptoExchange
