@@ -32,4 +32,14 @@ contract CryptoExchange {
 
         emit TokenPurchased(msg.sender, address(token), amount, rate);
     }
+
+    function sellTokens(uint256 _cryptoTokenAmount) public {
+        uint256 etherAmount = _cryptoTokenAmount / rate;
+
+        // transfer to the contract from user
+        token.transferFrom(msg.sender, address(this), _cryptoTokenAmount); // a smart constract which sends the tokens for you
+
+        // send ether to the person calling this function
+        msg.sender.transfer(etherAmount);
+    }
 }

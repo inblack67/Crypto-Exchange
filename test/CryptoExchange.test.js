@@ -55,7 +55,7 @@ contract('CryptoExchange', ([deployer, investor]) => {
       cryptoExchangeBalance = await web3.eth.getBalance(cryptoExchange.address);
       assert.equal(
         cryptoExchangeBalance.toString(),
-        web3.utils.toWei('1', 'Ether'),
+        web3.utils.toWei('1', 'Ether'), // 1 Ether => 100 crypto tokens
       );
 
       const event = purchaseResult.logs[0].args;
@@ -63,6 +63,24 @@ contract('CryptoExchange', ([deployer, investor]) => {
       assert.equal(event.token, token.address);
       assert.equal(event.amount.toString(), getEthers('100').toString());
       assert.equal(event.rate.toString(), '100');
+    });
+  });
+
+  describe('sellTokens()', async () => {
+    let result;
+    before(async () => {
+      // first the purchase must be approved befoe the contract can transferFrom
+      await token.approve(cryptoExchange.address, getEthers('100'), {
+        from: investor,
+      });
+      result = await cryptoExchange.sellTokens(
+        getEthers('100', { from: investor }),
+      );
+    });
+
+    it('Sell crypto tokens to CryptoExchange for a fixed price', async () => {
+      const investorBalance = await token.balanceOf(investor);
+      assert.equal(investorBalance.toString(), getEthers('0'));
     });
   });
 });
